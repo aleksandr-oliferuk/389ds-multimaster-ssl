@@ -1,8 +1,6 @@
 # 389-ds setup playbook
 
-Playbook for setup [389 Directory Server](https://directory.fedoraproject.org/) cluster in [multi-master replication](https://access.redhat.com/documentation/en-us/red_hat_directory_server/11/html/administration_guide/multi-supplier_replication) mode (star topology, look at the scheme below) with admin-console, memberOf, DNA plugins, SSL (LDAPS) and SAMBA schema.
-
-![](mutlimaster-star-topology.drawio)
+Playbook for setup [389 Directory Server](https://directory.fedoraproject.org/) cluster in [multi-master replication](https://access.redhat.com/documentation/en-us/red_hat_directory_server/11/html/administration_guide/multi-supplier_replication) mode (star topology) with admin-console, memberOf, DNA plugins, SSL (LDAPS) and SAMBA schema.
 
 ## Overview
 
