@@ -1,0 +1,43 @@
+# Replication setup
+- name: Enable replication agreements
+  command: dsconf -D "{{ root_dn }}" {{ instance_name }} replication enable \
+           --suffix="{{ server_suffix }}" \
+           --role="supplier" \
+           --replica-id={{ replica_id }} \
+           --bind-dn="{{ replication_manager }}" \
+           --bind-passwd="{{ replication_pass }}"
+
+- name: Setup suppliers Main to Peers
+  command: dsconf -D "{{ root_dn }}" {{ instance_name }} repl-agmt create --suffix="{{ server_suffix }}" \
+                                                                          --host="{{ item }}" \
+                                                                          --port=636 \
+                                                                          --conn-protocol=LDAPS \
+                                                                          --bind-dn="{{ replication_manager }}" \
+                                                                          --bind-passwd="{{ replication_pass }}" \
+                                                                          --bind-method=SIMPLE \
+                                                                          --init {{ item.split(".")[0] }}
+  with_items: "{{ peer_servers }}"
+  when: inventory_hostname in groups["main"]
+
+- name: Setup suppliers Peers to Main
+  command: dsconf -D "{{ root_dn }}" {{ instance_name }} repl-agmt create --suffix="{{ server_suffix }}" \
+                                                                          --host="{{ main_server }}" \
+                                                                          --port=636 \
+                                                                          --conn-protocol=LDAPS \
+                                                                          --bind-dn="{{ replication_manager }}" \
+                                                                          --bind-passwd="{{ replication_pass }}" \
+                                                                          --bind-method=SIMPLE \
+                                                                          --init 2Main
+  when: inventory_hostname in groups["peers"]
+
+- name: Initialize suppliers Main to Peers
+  command: dsconf -D "{{ root_dn }}" {{ instance_name }} repl-agmt init --suffix="{{ server_suffix }}" {{ item.split(".")[0] }}
+  with_items: "{{ peer_servers }}"
+  when: inventory_hostname in groups["main"]
+
+- pause:
+    seconds: 7
+
+- name: Initialize suppliers Peers to Main
+  command: dsconf -D "{{ root_dn }}" {{ instance_name }} repl-agmt init --suffix="{{ server_suffix }}" 2Main
+  when: inventory_hostname in groups["peers"]

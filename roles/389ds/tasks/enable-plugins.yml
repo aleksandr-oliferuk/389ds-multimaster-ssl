@@ -1,0 +1,23 @@
+- name: Setup memberOf plugin
+  command: dsconf {{ instance_name }} plugin memberof set --attr memberOf \
+                                                          --groupattr uniqueMember \
+                                                          --allbackends on \
+                                                          --skipnested off \
+                                                          --scope {{ server_suffix }}
+
+- name: Enable memberOf plugin
+  command: dsconf {{ instance_name }} plugin memberof enable
+
+- name: Setup DNA plugin
+  command: dsconf {{ instance_name }} plugin dna config "Account UIDs" add --type uidNumber \
+                                                                           --filter "(objectclass=posixAccount)" \
+                                                                           --scope {{ server_suffix }} \
+                                                                           --next-value 4127 \
+                                                                           --max-value 50000 \
+                                                                           --shared-config-entry "cn=Account UIDs,{{ server_suffix }}" \
+                                                                           --threshold 100 \
+                                                                           --range-request-timeout 60 \
+                                                                           --magic-regen 999999
+
+- name: Enable DNA plugin
+  command: dsconf {{ instance_name }} plugin dna enable

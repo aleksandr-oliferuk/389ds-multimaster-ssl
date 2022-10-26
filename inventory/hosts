@@ -1,0 +1,37 @@
+[servers]
+ldap-main     ansible_host=ldap-main.com
+ldap-peer1    ansible_host=ldap-peer1.com
+ldap-peer2    ansible_host=ldap-peer2.com
+ldap-peer3    ansible_host=ldap-peer3.com
+
+[main]
+ldap-main
+
+[peers]
+ldap-peer1
+ldap-peer2
+ldap-peer3
+
+[replica1]
+ldap-main
+
+[replica1:vars]
+replica_id=1
+
+[replica2]
+ldap-peer1
+
+[replica2:vars]
+replica_id=2
+
+[replica3]
+ldap-peer2
+
+[replica3:vars]
+replica_id=3
+
+[replica4]
+ldap-peer3
+
+[replica4:vars]
+replica_id=4

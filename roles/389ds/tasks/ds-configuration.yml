@@ -1,0 +1,14 @@
+# Directory configuration
+- name: Copy setup.inf
+  template:
+    src: ldap-setup.inf.j2
+    dest: /tmp/setup.inf
+
+- name: Configuring and launching DS
+  command: 'dscreate from-file /tmp/setup.inf'
+
+- name: Disable anonymous authorization
+  command: dsconf -D "{{ root_dn }}" {{ instance_name }} config replace nsslapd-allow-anonymous-access=off
+
+- name: Restarting DS
+  command: dsctl {{ instance_name }} restart

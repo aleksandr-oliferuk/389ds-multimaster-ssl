@@ -1,0 +1,14 @@
+# SSL Setup
+- name: Copy ssl p12 certificate into cert storage
+  copy:
+    src: server.p12
+    dest: /tmp/server.p12
+
+- name: Add certificate to cert DB
+  command: pk12util -i /tmp/server.p12 -d {{ ssl_certs_storage }} -W '' -k {{ ssl_certs_storage }}/pwdfile.txt
+
+- name: Apply certificate
+  command: dsconf {{ instance_name }} security rsa set --nss-cert-name 'YOURDOMAIN.COM'
+
+- name: Restarting DS
+  command: dsctl {{ instance_name }} restart

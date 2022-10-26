@@ -1,0 +1,17 @@
+# Restore DB from LDIF file and start WebUI
+- name: Copy ldif with DB backup
+  template:
+    src: root_suffix.ldif
+    dest: /var/lib/dirsrv/slapd-{{ instance_name }}/ldif/root_suffix.ldif
+
+- name: Stoping Directory Server
+  command: dsctl {{ instance_name }} stop
+
+- name: Initialize suffix from backup
+  command: dsctl {{ instance_name }} ldif2db userroot /var/lib/dirsrv/slapd-{{ instance_name }}/ldif/root_suffix.ldif --encrypted
+
+- name: Set password admins
+  command: dsconf -D "{{ root_dn }}" {{ instance_name }} pwpolicy set --pwdadmin "cn=Directory Administrators,{{ server_suffix }}"
+
+- name: Starting Directory Server
+  command: dsctl {{ instance_name }} start

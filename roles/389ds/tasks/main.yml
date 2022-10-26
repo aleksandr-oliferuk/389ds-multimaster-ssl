@@ -1,0 +1,25 @@
+---
+- name: Environment setup
+  import_tasks: environment.yml
+
+- name: Setup clocks
+  import_tasks: chrony.yml
+
+- name: Directory Server configuration
+  import_tasks: ds-configuration.yml
+
+- name: TLS Setup
+  import_tasks: tls-setup.yml
+
+- name: Plugins setup
+  import_tasks: enable-plugins.yml
+
+- name: Restore DB from ldif
+  import_tasks: restore-db.yml
+  when: restore_from_backup == yes
+
+- name: Replication setup
+  import_tasks: replication-setup.yml
+
+- name: Start Web UI
+  import_tasks: start-web-ui.yml

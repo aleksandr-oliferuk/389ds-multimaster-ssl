@@ -1,0 +1,17 @@
+---
+# LDAP settings
+ds_system_user: dirsrv # system user to run directory server
+ds_admin_pass: # directory server admin's password
+server_suffix: # dc=com # root suffix
+instance_name: '{{ ansible_host.split(".")[0] | lower }}' # name of the instance
+root_dn: # cn=root # admin's ldap account
+replication_manager: # cn=syncmaster,cn=config # replication account
+replication_pass: # replication account's password
+ssl_certs_storage: /etc/dirsrv/slapd-{{ instance_name }} # directory server certificate storage
+ntp_server: # NTP server for clock sync
+restore_from_backup: # restore from backup - yes or no; you should have valid ldif-dump of your databes
+main_server: ldap-main.com
+peer_servers:
+  - ldap-peer1.com
+  - ldap-peer2.com
+  - ldap-peer3.com

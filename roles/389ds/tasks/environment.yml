@@ -1,0 +1,41 @@
+# Environment setup
+- name: Firewalld open ports
+  firewalld:
+    zone: public
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - 389/tcp
+    - 636/tcp
+    - 9090/tcp
+
+- name: Reloading firewalld
+  systemd:
+    name: firewalld
+    state: reloaded
+    enabled: yes
+
+- name: Clean dnf cache
+  command: "dnf -y clean packages"
+
+- name: Installing 389DS
+  command: 'dnf -y module install 389-directory-server:stable/default warn=false'
+
+- name: Installing stuff
+  dnf:
+    name:
+      - nano
+      - htop
+      - wget
+      - vim
+      - bind-utils
+      - telnet
+      - net-tools
+      - nss-tools
+      - openssl
+      - openldap-clients
+      - curl
+      - hostname
+      - authconfig
+    state: present
